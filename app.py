@@ -13,7 +13,7 @@ import threading
 import subprocess
 
 GITHUB_REPO = "kuncikayu/airdrop-tracker-app" 
-CURRENT_VERSION = "v1.0.1" 
+CURRENT_VERSION = "v1.0.2" 
 
 def resource_path(relative_path):
     try:
@@ -137,12 +137,20 @@ class LoginWindow(ctk.CTk):
                 updater_script_content = f"""
 @echo off
 echo Waiting for Oryx Tracker to close...
-timeout /t 4 /nobreak > NUL
+rem Memberi jeda 4 detik untuk memastikan aplikasi utama telah tertutup sepenuhnya
+ping 127.0.0.1 -n 5 > nul
+
 echo Replacing application file...
+rem Menghapus file .exe yang lama
 del "{os.path.basename(sys.executable)}"
-rename "{os.path.basename(new_exe_path)}" "{os.path.basename(sys.executable)}"
+rem Mengganti nama file .exe yang baru diunduh menjadi nama asli
+rename "{new_exe_path}" "{os.path.basename(sys.executable)}"
+
 echo Update complete! Starting new version...
+rem Membuka kembali aplikasi versi baru
 start "" "{os.path.basename(sys.executable)}"
+
+rem Membersihkan skrip updater ini
 del "%~f0"
 """
                 with open("updater.bat", "w") as f: f.write(updater_script_content)
