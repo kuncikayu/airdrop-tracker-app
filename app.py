@@ -13,7 +13,7 @@ import threading
 import subprocess
 
 GITHUB_REPO = "kuncikayu/airdrop-tracker-app" 
-CURRENT_VERSION = "v1.0.2" 
+CURRENT_VERSION = "v1.0.3" 
 
 def resource_path(relative_path):
     try:
@@ -134,23 +134,19 @@ class LoginWindow(ctk.CTk):
                     total_length = int(response.headers.get('content-length')); downloaded = 0
                     for chunk in response.iter_content(chunk_size=8192):
                         f.write(chunk); downloaded += len(chunk); progress = downloaded / total_length; progress_bar.set(progress); progress_window.update_idletasks()
+                
                 updater_script_content = f"""
 @echo off
 echo Waiting for Oryx Tracker to close...
-rem Memberi jeda 4 detik untuk memastikan aplikasi utama telah tertutup sepenuhnya
 ping 127.0.0.1 -n 5 > nul
 
 echo Replacing application file...
-rem Menghapus file .exe yang lama
 del "{os.path.basename(sys.executable)}"
-rem Mengganti nama file .exe yang baru diunduh menjadi nama asli
 rename "{new_exe_path}" "{os.path.basename(sys.executable)}"
 
 echo Update complete! Starting new version...
-rem Membuka kembali aplikasi versi baru
 start "" "{os.path.basename(sys.executable)}"
 
-rem Membersihkan skrip updater ini
 del "%~f0"
 """
                 with open("updater.bat", "w") as f: f.write(updater_script_content)
@@ -444,12 +440,26 @@ class CryptoTrackerApp:
         ctk.CTkButton(self.sidebar_frame, text="+ Add Account", fg_color="transparent", text_color=("#007ACC", "#64B5F6"), hover_color=("#E0E2E5", "#404040"), command=self.add_account_popup).pack(fill="x", padx=20, pady=5)
         
         bottom_frame = ctk.CTkFrame(self.sidebar_frame, fg_color="transparent"); bottom_frame.pack(side="bottom", fill="x", pady=10, padx=20)
-        self.user_label = ctk.CTkLabel(bottom_frame, text=f"👤 {self.logged_in_user}", anchor="w"); self.user_label.pack(fill="x")
-        ctk.CTkButton(bottom_frame, text="Manage Users", fg_color="transparent", text_color="gray", hover=False, anchor="w", command=self.open_user_management, height=20).pack(fill="x")
-        ctk.CTkButton(bottom_frame, text="Logout", fg_color="transparent", text_color="#EF4444", hover_color="#FECACA", anchor="w", command=self.logout, height=20).pack(fill="x")
-        dark_mode_switch = ctk.CTkSwitch(bottom_frame, text="Dark Mode", command=lambda: self.toggle_dark_mode(dark_mode_switch.get())); dark_mode_switch.pack(anchor="w", pady=(10,0))
+        
+        user_info_frame = ctk.CTkFrame(bottom_frame, fg_color="transparent")
+        user_info_frame.pack(fill="x")
+        self.user_label = ctk.CTkLabel(user_info_frame, text=f"👤 {self.logged_in_user}", anchor="w"); self.user_label.pack(fill="x")
+        ctk.CTkButton(user_info_frame, text="Manage Users", fg_color="transparent", text_color="gray", hover=False, anchor="w", command=self.open_user_management, height=20).pack(fill="x")
+        ctk.CTkButton(user_info_frame, text="Logout", fg_color="transparent", text_color="#EF4444", hover_color="#FECACA", anchor="w", command=self.logout, height=20).pack(fill="x")
+        
+        dark_mode_switch = ctk.CTkSwitch(bottom_frame, text="Dark Mode", command=lambda: self.toggle_dark_mode(dark_mode_switch.get())); dark_mode_switch.pack(anchor="w", pady=(10,15))
         if ctk.get_appearance_mode() == "Dark": dark_mode_switch.select()
+
+        footer_sub_frame = ctk.CTkFrame(bottom_frame, fg_color="transparent")
+        footer_sub_frame.pack(fill="x")
+        made_by_label = ctk.CTkLabel(footer_sub_frame, text="Made with ♥ by ", font=ctk.CTkFont(size=12), text_color="gray")
+        made_by_label.pack(side="left")
+        link_label = ctk.CTkLabel(footer_sub_frame, text="Kuncikayu", font=ctk.CTkFont(size=12, underline=True), text_color=("#007ACC", "#64B5F6"), cursor="hand2")
+        link_label.pack(side="left")
+        link_label.bind("<Button-1>", lambda e: webbrowser.open_new_tab("https://twitter.com/kuncikayu_"))
+        
         self.update_active_button_style()
+        
     def populate_account_list_sidebar(self):
         for widget in self.account_scroll_frame.winfo_children(): widget.destroy()
         c = self.db_conn.cursor(); c.execute("SELECT id, name FROM accounts ORDER BY name"); accounts = c.fetchall(); self.account_widgets = {}
