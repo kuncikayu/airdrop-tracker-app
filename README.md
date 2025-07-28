@@ -1,6 +1,6 @@
 
 # Oryx Tracker - Airdrop Tracker App (v1.0.0)
-> ~~Replace with a URL to your application’s screenshot~~
+> ![Dashboard](https://raw.githubusercontent.com/kuncikayu/airdrop-tracker-app/refs/heads/main/screenshot/image.png)
 
 Oryx Tracker is a desktop application for Windows designed to help airdrop hunters track all their activities neatly and efficiently. Forget messy spreadsheets: manage all your projects, wallets, and tasks in one secure application that runs locally on your computer.
 
