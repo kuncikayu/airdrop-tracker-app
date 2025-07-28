@@ -13,7 +13,7 @@ import threading
 import subprocess
 
 GITHUB_REPO = "kuncikayu/airdrop-tracker-app" 
-CURRENT_VERSION = "v1.0.0" 
+CURRENT_VERSION = "v1.0.1" 
 
 def resource_path(relative_path):
     try:
@@ -155,7 +155,7 @@ class CryptoTrackerApp:
     def __init__(self, root, username):
         self.root = root
         self.root.title(f"Oryx Tracker - {CURRENT_VERSION}")
-        self.root.geometry("1600x850")
+        self.root.geometry("2000x850")
         
         try:
             self.root.iconbitmap(resource_path("logo.ico"))
