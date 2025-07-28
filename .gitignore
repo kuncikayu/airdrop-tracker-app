@@ -1,0 +1,16 @@
+# File Database
+*.db
+*.db-journal
+
+# File Build PyInstaller
+/dist/
+/build/
+*.spec
+
+# File Sementara Python
+__pycache__/
+*.pyc
+
+# File Sementara Lainnya
+*.log
+.DS_Store
